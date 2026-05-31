@@ -15,7 +15,8 @@
         "contactEmail": { "type": "string" },
         "ppdbTitle": { "type": "string" },
         "ppdbDescription": { "type": "string" },
-        "ppdbBrochureUrl": { "type": "string" }
+        "ppdbBrochureUrl": { "type": "string" },
+        "copyrightText": { "type": "string" }
       }
     },
     "Registration": {

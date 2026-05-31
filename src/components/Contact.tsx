@@ -114,14 +114,14 @@ export default function Contact() {
       </div>
 
       {/* Footer Bar */}
-      <footer className="bg-white border-t border-slate-200 py-6 md:py-4 mt-12">
+      <footer className="bg-brand-blue border-t border-blue-700 py-6 md:py-4 mt-12 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex flex-wrap gap-4 md:gap-6 justify-center">
-            <p className="text-[10px] text-slate-500 font-medium whitespace-nowrap"><span className="text-slate-300 mr-2">📍</span>{content.contactAddress}</p>
-            <p className="text-[10px] text-slate-500 font-medium whitespace-nowrap"><span className="text-slate-300 mr-2">📞</span>{content.contactPhone}</p>
-            <p className="text-[10px] text-slate-500 font-medium whitespace-nowrap"><span className="text-slate-300 mr-2">✉️</span>{content.contactEmail}</p>
+            <p className="text-[10px] text-blue-100 font-medium whitespace-nowrap"><span className="text-blue-300 mr-2">📍</span>{content.contactAddress}</p>
+            <p className="text-[10px] text-blue-100 font-medium whitespace-nowrap"><span className="text-blue-300 mr-2">📞</span>{content.contactPhone}</p>
+            <p className="text-[10px] text-blue-100 font-medium whitespace-nowrap"><span className="text-blue-300 mr-2">✉️</span>{content.contactEmail}</p>
           </div>
-          <p className="text-[10px] font-bold text-slate-400 whitespace-nowrap">© {new Date().getFullYear()} {content.schoolName}</p>
+          <p className="text-[10px] font-bold text-white whitespace-nowrap">{content.copyrightText || `© ${new Date().getFullYear()} ${content.schoolName}`}</p>
         </div>
       </footer>
     </section>

@@ -17,8 +17,8 @@ service cloud.firestore {
 
     // Helpers
     function isValidSiteConfig(data) {
-      return data.keys().hasAll(['schoolName', 'heroTitle', 'heroSubtitle', 'aboutTitle', 'aboutDescription', 'contactAddress', 'contactPhone', 'contactEmail', 'ppdbTitle', 'ppdbDescription', 'ppdbBrochureUrl'])
-        && data.keys().size() == 11
+      return data.keys().hasAll(['schoolName', 'heroTitle', 'heroSubtitle', 'aboutTitle', 'aboutDescription', 'contactAddress', 'contactPhone', 'contactEmail', 'ppdbTitle', 'ppdbDescription', 'ppdbBrochureUrl', 'copyrightText'])
+        && (data.keys().size() == 11 || data.keys().size() == 12)
         && data.schoolName is string && data.schoolName.size() <= 100
         && data.heroTitle is string && data.heroTitle.size() <= 200
         && data.heroSubtitle is string && data.heroSubtitle.size() <= 200
@@ -29,7 +29,8 @@ service cloud.firestore {
         && data.contactEmail is string && data.contactEmail.size() <= 100
         && data.ppdbTitle is string && data.ppdbTitle.size() <= 200
         && data.ppdbDescription is string && data.ppdbDescription.size() <= 1000
-        && data.ppdbBrochureUrl is string && data.ppdbBrochureUrl.size() <= 500;
+        && data.ppdbBrochureUrl is string && data.ppdbBrochureUrl.size() <= 500
+        && data.copyrightText is string && data.copyrightText.size() <= 200;
     }
 
     function isValidInformationItem(data) {

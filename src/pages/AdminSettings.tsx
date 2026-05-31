@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useSite } from '../context/SiteContext';
 
 export default function AdminSettings() {
-  const { content, updateContent } = useSite();
+  const { content, updateContent, changePassword } = useSite();
   const [formData, setFormData] = useState({
     schoolName: content.schoolName,
     heroTitle: content.heroTitle,
@@ -12,8 +12,12 @@ export default function AdminSettings() {
     contactAddress: content.contactAddress,
     contactPhone: content.contactPhone,
     contactEmail: content.contactEmail,
+    copyrightText: content.copyrightText,
   });
   const [isSaved, setIsSaved] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [passwordMsg, setPasswordMsg] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -26,6 +30,19 @@ export default function AdminSettings() {
     updateContent(formData);
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 3000);
+  };
+
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordMsg('');
+    setPasswordError('');
+    try {
+      await changePassword(newPassword);
+      setPasswordMsg('Password berhasil diubah.');
+      setNewPassword('');
+    } catch (err: any) {
+      setPasswordError(err.message || 'Gagal mengubah password');
+    }
   };
 
   return (
@@ -145,6 +162,16 @@ export default function AdminSettings() {
                 />
               </div>
             </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-600 mb-2">Teks Copyright (Footer)</label>
+              <input
+                type="text"
+                name="copyrightText"
+                value={formData.copyrightText}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+              />
+            </div>
           </div>
         </div>
 
@@ -162,6 +189,36 @@ export default function AdminSettings() {
                ✓ Perubahan berhasil disimpan
              </span>
           )}
+        </div>
+      </form>
+
+      {/* Section: Keamanan */}
+      <h3 className="text-2xl font-bold text-slate-800 mb-6 mt-12">Keamanan</h3>
+      <form onSubmit={handlePasswordChange} className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-100">
+        <h3 className="text-sm font-bold text-slate-800 uppercase tracking-widest mb-6 border-b border-slate-100 pb-3">Ganti Password Admin</h3>
+        
+        {passwordMsg && <div className="mb-4 p-3 bg-emerald-50 text-emerald-600 text-sm rounded-lg border border-emerald-100">{passwordMsg}</div>}
+        {passwordError && <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-lg border border-red-100">{passwordError}</div>}
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-xs font-bold text-slate-600 mb-2">Password Baru (minimal 6 karakter)</label>
+            <input
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Masukkan password baru"
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 max-w-sm"
+              required
+              minLength={6}
+            />
+          </div>
+          <button
+            type="submit"
+            className="px-8 py-3 bg-slate-800 text-white font-bold rounded-xl hover:bg-slate-900 transition duration-200"
+          >
+            Update Password
+          </button>
         </div>
       </form>
     </div>
