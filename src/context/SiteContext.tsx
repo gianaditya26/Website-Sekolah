@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { db, auth } from '../firebase';
 import { doc, getDoc, setDoc, collection, onSnapshot, addDoc, deleteDoc, updateDoc } from 'firebase/firestore';
-import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, updatePassword, signOut } from 'firebase/auth';
+import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
 
 type Registration = {
   id: string;
@@ -65,9 +65,8 @@ type SiteContextType = {
   addInformationItem: (item: Omit<InformationItem, 'id'>) => Promise<void>;
   deleteInformationItem: (id: string) => Promise<void>;
   isAuthenticated: boolean;
-  login: (user: string, pin: string) => Promise<void>;
+  login: () => Promise<void>;
   logout: () => Promise<void>;
-  changePassword: (newPassword: string) => Promise<void>;
 };
 
 const SiteContext = createContext<SiteContextType | undefined>(undefined);
@@ -198,31 +197,9 @@ export function SiteProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const login = async (user: string, pin: string) => {
-    if (pin.length < 6) throw new Error("Password minimal 6 karakter");
-    const email = `${user}@smantara.local`;
-    try {
-      await signInWithEmailAndPassword(auth, email, pin);
-    } catch (err: any) {
-      if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
-        try {
-          await createUserWithEmailAndPassword(auth, email, pin);
-        } catch (createErr: any) {
-          if (createErr.code === 'auth/email-already-in-use') {
-            throw new Error('Username sudah ada tapi password salah.');
-          }
-          throw new Error(createErr.message);
-        }
-      } else {
-        throw new Error(err.message);
-      }
-    }
-  };
-
-  const changePassword = async (newPassword: string) => {
-    if (!auth.currentUser) throw new Error("Belum login");
-    if (newPassword.length < 6) throw new Error("Password minimal 6 karakter");
-    await updatePassword(auth.currentUser, newPassword);
+  const login = async () => {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
   };
 
   const logout = async () => {
@@ -236,7 +213,7 @@ export function SiteProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <SiteContext.Provider value={{ content, updateContent, addRegistration, addInformationItem, deleteInformationItem, isAuthenticated, login, logout, changePassword }}>
+    <SiteContext.Provider value={{ content, updateContent, addRegistration, addInformationItem, deleteInformationItem, isAuthenticated, login, logout }}>
       {children}
     </SiteContext.Provider>
   );
